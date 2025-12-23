@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Magazine_Conveyor.ViewModel;
 
 namespace Magazine_Conveyor
 {

@@ -1,5 +1,6 @@
-﻿
-namespace Magazine_Conveyor
+﻿using Magazine_Conveyor.Model;
+
+namespace Magazine_Conveyor.Service
 {
     public class FindFreePlaceService : IService
     {

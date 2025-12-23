@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace Magazine_Conveyor
+namespace Magazine_Conveyor.ViewModel
 {
     /// <summary>
     /// A command whose sole purpose is to relay its functionality to other objects by invoking delegates.

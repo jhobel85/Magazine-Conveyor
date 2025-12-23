@@ -1,7 +1,8 @@
-﻿using Magazine_Conveyor;
+﻿using Magazine_Conveyor.Model;
+using Magazine_Conveyor.Service;
 
 
-namespace Magazine_Conveyor
+namespace Magazine_Conveyor.Tests
 {
     public class FindFreePlaceTest
     {

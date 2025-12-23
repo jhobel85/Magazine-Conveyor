@@ -89,11 +89,35 @@ dotnet test Magazine-Conveyor/tests/UnitTests.csproj
 
 ## Architecture
 
+### Project Structure
+
+```
+Magazine-Conveyor/
+├── Model/
+│   ├── Magazine.cs          - Core algorithm and data model
+│   ├── Position.cs          - Individual position with INotifyPropertyChanged
+│   └── IMagazine.cs         - Magazine interface contract
+├── ViewModel/
+│   ├── MagazineViewModel.cs - UI state and command orchestration
+│   └── RelayCommand.cs      - ICommand implementation for MVVM
+├── Service/
+│   ├── FindFreePlaceService.cs - Algorithm execution service
+│   └── IService.cs          - Service interface contract
+├── View/
+│   ├── MainWindow.xaml      - Main UI window
+│   ├── MainWindow.xaml.cs   - Code-behind (minimal)
+│   ├── App.xaml             - Application definition
+│   ├── App.xaml.cs          - Application startup logic
+│   ├── CircularPanel.cs     - Custom WPF panel for circular visualization
+│   └── ParametrizedBooleanToVisibilityConverter.cs - WPF value converter
+└── bin/, obj/               - Build artifacts
+```
+
 ### MVVM Pattern (Properly Implemented)
 
 The application follows a strict **Model-View-ViewModel (MVVM)** pattern with clear separation of concerns:
 
-#### **Model Layer** (`src/`)
+#### **Model Layer** (`Model/`)
 - **`Magazine.cs`**: Pure business logic and data model
   - No UI concerns (no `INotifyPropertyChanged`, no WPF references)
   - Contains the core `FindFreePlace` algorithm
@@ -104,8 +128,12 @@ The application follows a strict **Model-View-ViewModel (MVVM)** pattern with cl
   - Implements `INotifyPropertyChanged` for view updates
   - Properties: `IsVisible` (visibility), `IsChecked` (occupancy status)
 
-#### **ViewModel Layer** (`src/`)
+- **`IMagazine.cs`**: Interface defining the magazine contract
+  - Enables service layer decoupling from concrete implementation
+
+#### **ViewModel Layer** (`ViewModel/`)
 - **`MagazineViewModel.cs`**: Mediates between View and Model
+  - Namespace: `Magazine_Conveyor.ViewModel`
   - Implements `INotifyPropertyChanged` for data binding
   - Exposes properties: `PositionCount`, `IsRotary`, `NeededPlaces`, `LastFoundPosition`
   - Implements `ICommand` properties:
@@ -115,35 +143,56 @@ The application follows a strict **Model-View-ViewModel (MVVM)** pattern with cl
   - Creates and manages the Model and Service instances
 
 - **`RelayCommand.cs`**: Implementation of `ICommand` interface
+  - Namespace: `Magazine_Conveyor.ViewModel`
   - Generic and non-generic versions for flexible command binding
   - Enables buttons to execute commands without code-behind event handlers
 
-#### **View Layer**
+#### **View Layer** (`View/`)
 - **`MainWindow.xaml`**: Pure XAML UI definition
+  - Namespace: `xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:Magazine_Conveyor="clr-namespace:Magazine_Conveyor.View"`
   - Data bindings to ViewModel properties
   - Command bindings to ViewModel commands
   - Contains only presentation logic
   - No code-behind event handlers (replaced by commands)
 
 - **`MainWindow.xaml.cs`**: Minimal code-behind
-  - Sets `DataContext` to `MagazineViewModel` instance
+  - Namespace: `Magazine_Conveyor.View`
+  - Sets `DataContext` to `MagazineViewModel` instance (imported from ViewModel namespace)
   - No business logic
 
-#### **Service Layer** (`src/`)
+- **`App.xaml` & `App.xaml.cs`**: Application-level configuration
+  - Namespace: `Magazine_Conveyor.View`
+  - Application startup and resource definitions
+
+- **`CircularPanel.cs`**: Custom WPF Panel control
+  - Namespace: `Magazine_Conveyor.View`
+  - Renders circular magazine visualization
+  - Used by MainWindow for UI layout
+
+- **`ParametrizedBooleanToVisibilityConverter.cs`**: WPF value converter
+  - Namespace: `Magazine_Conveyor.View`
+  - Converts boolean position state to visibility for UI binding
+
+#### **Service Layer** (`Service/`)
 - **`FindFreePlaceService.cs`**: Implements `IService` interface
+  - Namespace: `Magazine_Conveyor.Service`
   - Injected into ViewModel
   - Encapsulates the algorithm execution
   - Acts as a bridge between ViewModel and Model
 
+- **`IService.cs`**: Service interface contract
+  - Namespace: `Magazine_Conveyor.Service`
+  - Enables dependency injection and loose coupling
+
 ### Dependency Injection Flow
 
 ```
-MainWindow
+MainWindow (View.MainWindow)
     ↓
 MagazineViewModel (DataContext)
-    ├─→ Magazine (Model)
-    └─→ FindFreePlaceService (Service)
-            └─→ Magazine (via IMagazine interface)
+    ├─→ Magazine (Model.Magazine)
+    └─→ FindFreePlaceService (Service.FindFreePlaceService)
+            └─→ IMagazine (Model interface)
 ```
 
 ### Data Binding Flow

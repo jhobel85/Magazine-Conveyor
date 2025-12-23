@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows;
 
-namespace Magazine_Conveyor
+namespace Magazine_Conveyor.View
 {
     public sealed class ParametrizedBooleanToVisibilityConverter : IValueConverter
     {
