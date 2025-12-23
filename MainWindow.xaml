@@ -18,6 +18,9 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <view:ParametrizedBooleanToVisibilityConverter x:Key="ParametrizedBooleanToVisibilityConverter"/>
         <view:PositionCountToSizeConverter x:Key="PositionCountToSizeConverter"/>
+        <view:MaxColumnsConverter x:Key="MaxColumnsConverter"/>
+        <view:ItemLimitConverter x:Key="ItemLimitConverter"/>
+        <view:ItemLimitExceededConverter x:Key="ItemLimitExceededConverter"/>
         
         <!-- Styles -->
         <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
@@ -163,13 +166,16 @@
                         <!-- Linear View -->
                         <Grid x:Name="linearRect" 
                               Visibility="{Binding IsRotary, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=False}">
-                            <StackPanel Margin="16,16,16,16">
+                            
+                            <!-- Linear Display (only if <= 500 items) -->
+                            <StackPanel Margin="16,16,16,16"
+                                        Visibility="{Binding PositionCount, Converter={StaticResource ItemLimitConverter}, ConverterParameter=500}">
                                 <!-- Occupied Indicator -->
                                 <TextBlock Text="Occupied Slots" FontSize="11" Foreground="#666666" Margin="0,0,0,6"/>
-                                <ItemsControl ItemsSource="{Binding Positions}" Height="40">
+                                <ItemsControl ItemsSource="{Binding Positions}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <UniformGrid Columns="{Binding Positions.Count}"/>
+                                            <UniformGrid Columns="{Binding Positions.Count, Converter={StaticResource MaxColumnsConverter}}"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
@@ -180,35 +186,26 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                                 
-                                <!-- Available Slots -->
-                                <TextBlock Text="Available Slots" FontSize="11" Foreground="#666666" Margin="0,16,0,6"/>
-                                <ItemsControl ItemsSource="{Binding Positions}" Height="40">
+                                <!-- Available Slots with Checkboxes -->
+                                <TextBlock Text="Available Slots (Interactive)" FontSize="11" Foreground="#666666" Margin="0,16,0,6"/>
+                                <ItemsControl ItemsSource="{Binding Positions}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <UniformGrid Columns="{Binding Positions.Count}"/>
+                                            <UniformGrid Columns="{Binding Positions.Count, Converter={StaticResource MaxColumnsConverter}}"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Rectangle Width="14" Height="30" Fill="#3498DB" Margin="2"
-                                                       Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                                
-                                <!-- Selection Checkboxes -->
-                                <TextBlock Text="Select Items" FontSize="11" Foreground="#666666" Margin="0,16,0,6"/>
-                                <ItemsControl ItemsSource="{Binding Positions}" Height="40">
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <UniformGrid Columns="{Binding Positions.Count}"/>
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                      Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                      IsChecked="{Binding IsChecked}"/>
+                                            <Grid Width="20" Height="34" Margin="2"
+                                                  Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <!-- Background Rectangle -->
+                                                <Rectangle Width="14" Height="30" Fill="#3498DB" VerticalAlignment="Center"/>
+                                                <!-- Checkbox Overlay -->
+                                                <CheckBox HorizontalAlignment="Center" 
+                                                          VerticalAlignment="Center"
+                                                          IsChecked="{Binding IsChecked}"
+                                                          Background="Transparent"/>
+                                            </Grid>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -218,7 +215,10 @@
                         <!-- Rotary View -->
                         <Grid Grid.Row="0" x:Name="circleRect" 
                               Visibility="{Binding IsRotary, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}}">
-                            <Viewbox Stretch="Uniform" Margin="20">
+                            
+                            <!-- Rotary Display (only if <= 100 items) -->
+                            <Grid Visibility="{Binding PositionCount, Converter={StaticResource ItemLimitConverter}, ConverterParameter=100}">
+                                <Viewbox Stretch="Uniform" Margin="20">
                                 <Grid Width="800" Height="800">
                                     <!-- Title -->
                                     <TextBlock Text="Rotary Magazine View" 
@@ -332,6 +332,116 @@
                                     </StackPanel>
                                 </Grid>
                             </Viewbox>
+                            </Grid>
+                        </Grid>
+                        
+                        <!-- Unified Warning Message -->
+                        <Grid>
+                            <!-- Rotary Warning (> 100 items) -->
+                            <Grid Visibility="{Binding IsRotary, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=True}">
+                                <Border Background="White" 
+                                        BorderBrush="#E0E0E0" 
+                                        BorderThickness="1" 
+                                        CornerRadius="8" 
+                                        Padding="40"
+                                        Margin="40"
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        MaxWidth="600"
+                                        Visibility="{Binding PositionCount, Converter={StaticResource ItemLimitExceededConverter}, ConverterParameter=100}">
+                                    <StackPanel>
+                                        <TextBlock Text="⚠" 
+                                                   FontSize="48" 
+                                                   Foreground="#F39C12" 
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,16"/>
+                                        <TextBlock Text="Rotary View Not Available" 
+                                                   FontSize="20" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#333333" 
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,12"/>
+                                        <TextBlock TextWrapping="Wrap" 
+                                                   FontSize="14" 
+                                                   Foreground="#666666" 
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Margin="0,0,0,16">
+                                            <Run Text="The rotary view supports a maximum of 100 positions."/>
+                                            <LineBreak/>
+                                            <Run Text="You currently have "/>
+                                            <Run Text="{Binding PositionCount}" FontWeight="Bold"/>
+                                            <Run Text=" positions selected."/>
+                                        </TextBlock>
+                                        <Border Background="#FFF3CD" 
+                                                BorderBrush="#F39C12" 
+                                                BorderThickness="1" 
+                                                CornerRadius="4" 
+                                                Padding="12"
+                                                Margin="0,8,0,0">
+                                            <TextBlock TextWrapping="Wrap" 
+                                                       FontSize="12" 
+                                                       Foreground="#856404">
+                                                <Run Text="💡 "/>
+                                                <Run Text="Please reduce the number of positions to 100 or less, or use the Linear view instead."/>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                            
+                            <!-- Linear Warning (> 500 items) -->
+                            <Grid Visibility="{Binding IsRotary, Converter={StaticResource ParametrizedBooleanToVisibilityConverter}, ConverterParameter=False}">
+                                <Border Background="White" 
+                                        BorderBrush="#E0E0E0" 
+                                        BorderThickness="1" 
+                                        CornerRadius="8" 
+                                        Padding="40"
+                                        Margin="40"
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center"
+                                        MaxWidth="600"
+                                        Visibility="{Binding PositionCount, Converter={StaticResource ItemLimitExceededConverter}, ConverterParameter=500}">
+                                    <StackPanel>
+                                        <TextBlock Text="⚠" 
+                                                   FontSize="48" 
+                                                   Foreground="#E74C3C" 
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,16"/>
+                                        <TextBlock Text="Too Many Positions" 
+                                                   FontSize="20" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#333333" 
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,12"/>
+                                        <TextBlock TextWrapping="Wrap" 
+                                                   FontSize="14" 
+                                                   Foreground="#666666" 
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   Margin="0,0,0,16">
+                                            <Run Text="The linear view supports a maximum of 500 positions."/>
+                                            <LineBreak/>
+                                            <Run Text="You currently have "/>
+                                            <Run Text="{Binding PositionCount}" FontWeight="Bold"/>
+                                            <Run Text=" positions selected."/>
+                                        </TextBlock>
+                                        <Border Background="#F8D7DA" 
+                                                BorderBrush="#E74C3C" 
+                                                BorderThickness="1" 
+                                                CornerRadius="4" 
+                                                Padding="12"
+                                                Margin="0,8,0,0">
+                                            <TextBlock TextWrapping="Wrap" 
+                                                       FontSize="12" 
+                                                       Foreground="#721C24">
+                                                <Run Text="💡 "/>
+                                                <Run Text="Please reduce the number of positions to 500 or less to view the magazine layout."/>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </Grid>
                     </StackPanel>
                 </Border>
