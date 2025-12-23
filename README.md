@@ -89,15 +89,78 @@ dotnet test Magazine-Conveyor/tests/UnitTests.csproj
 
 ## Architecture
 
-### MVVM Pattern
-- **Model**: `Magazine` class contains the business logic and data
-- **View**: `MainWindow.xaml` defines the UI
-- **ViewModel**: `Magazine` implements `INotifyPropertyChanged` for data binding
+### MVVM Pattern (Properly Implemented)
 
-### Dependency Injection
-- `FindFreePlaceService` is injected as a service implementing `IService`
-- Services are initialized in the `MainWindow` constructor
-- Clean separation allows for easy testing and maintainability
+The application follows a strict **Model-View-ViewModel (MVVM)** pattern with clear separation of concerns:
+
+#### **Model Layer** (`src/`)
+- **`Magazine.cs`**: Pure business logic and data model
+  - No UI concerns (no `INotifyPropertyChanged`, no WPF references)
+  - Contains the core `FindFreePlace` algorithm
+  - Manages position data and magazine state
+  - Provides methods like `UpdatePositionsVisibility()` and `UpdatePossitionsOccupancy()`
+
+- **`Position.cs`**: Represents individual magazine positions with UI binding capability
+  - Implements `INotifyPropertyChanged` for view updates
+  - Properties: `IsVisible` (visibility), `IsChecked` (occupancy status)
+
+#### **ViewModel Layer** (`src/`)
+- **`MagazineViewModel.cs`**: Mediates between View and Model
+  - Implements `INotifyPropertyChanged` for data binding
+  - Exposes properties: `PositionCount`, `IsRotary`, `NeededPlaces`, `LastFoundPosition`
+  - Implements `ICommand` properties:
+    - `UpdateMagazineCommand`: Updates magazine configuration
+    - `FindFreePlaceCommand`: Executes the find algorithm
+  - Contains all business logic orchestration (ViewModel responsibility)
+  - Creates and manages the Model and Service instances
+
+- **`RelayCommand.cs`**: Implementation of `ICommand` interface
+  - Generic and non-generic versions for flexible command binding
+  - Enables buttons to execute commands without code-behind event handlers
+
+#### **View Layer**
+- **`MainWindow.xaml`**: Pure XAML UI definition
+  - Data bindings to ViewModel properties
+  - Command bindings to ViewModel commands
+  - Contains only presentation logic
+  - No code-behind event handlers (replaced by commands)
+
+- **`MainWindow.xaml.cs`**: Minimal code-behind
+  - Sets `DataContext` to `MagazineViewModel` instance
+  - No business logic
+
+#### **Service Layer** (`src/`)
+- **`FindFreePlaceService.cs`**: Implements `IService` interface
+  - Injected into ViewModel
+  - Encapsulates the algorithm execution
+  - Acts as a bridge between ViewModel and Model
+
+### Dependency Injection Flow
+
+```
+MainWindow
+    ↓
+MagazineViewModel (DataContext)
+    ├─→ Magazine (Model)
+    └─→ FindFreePlaceService (Service)
+            └─→ Magazine (via IMagazine interface)
+```
+
+### Data Binding Flow
+
+1. **View** binds to **ViewModel** properties
+2. **ViewModel** notifies View of property changes via `INotifyPropertyChanged`
+3. **ViewModel** delegates business logic to **Model** and **Service**
+4. **Model** remains independent of UI concerns
+
+### Command Execution Flow
+
+1. **User** clicks button in **View**
+2. **Button** executes **ViewModel Command**
+3. **ViewModel** orchestrates operation by calling **Service**
+4. **Service** executes logic on **Model**
+5. **ViewModel** updates properties
+6. **View** automatically updates via data binding
 
 ## License
 

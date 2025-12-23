@@ -3,7 +3,7 @@ namespace Magazine_Conveyor
 {
     public class FindFreePlaceService : IService
     {
-        private IMagazine reciever;
+        private readonly IMagazine reciever;
         private int freePlace;
 
         public FindFreePlaceService(IMagazine reciever) {

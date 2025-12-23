@@ -24,12 +24,12 @@
 
         <StackPanel Height="400" Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Top">
             <Label Content="Select postitions:"/>
-            <TextBox x:Name="txtPositions" Text="{Binding PositionCount}" HorizontalAlignment="Left" Width="50"/>
-            <Button x:Name="btnAddMagazine" Margin="0,5,0,0"  HorizontalAlignment="Left" Click="btnAddMagazine_Click">Update magazine</Button>
-            <CheckBox x:Name="chbRotary" IsChecked="{Binding IsRotary}" Content="Is Rotary" HorizontalAlignment="Left"/>
+            <TextBox x:Name="txtPositions" Text="{Binding PositionCount, Mode=TwoWay}" HorizontalAlignment="Left" Width="50"/>
+            <Button x:Name="btnAddMagazine" Margin="0,5,0,0"  HorizontalAlignment="Left" Command="{Binding UpdateMagazineCommand}">Update magazine</Button>
+            <CheckBox x:Name="chbRotary" IsChecked="{Binding IsRotary, Mode=TwoWay}" Content="Is Rotary" HorizontalAlignment="Left"/>
             <Label Content="Needed places:"/>
-            <TextBox x:Name="txtNeededPlaces" Text="{Binding NeededPlaces}" HorizontalAlignment="Left" Width="50"/>
-            <Button x:Name="btnNeededPlace" Margin="0,5,0,0"  HorizontalAlignment="Left" Click="btnNeededPlace_Click">Find free possition</Button>
+            <TextBox x:Name="txtNeededPlaces" Text="{Binding NeededPlaces, Mode=TwoWay}" HorizontalAlignment="Left" Width="50"/>
+            <Button x:Name="btnNeededPlace" Margin="0,5,0,0"  HorizontalAlignment="Left" Command="{Binding FindFreePlaceCommand}">Find free possition</Button>
         </StackPanel>
 
         <StackPanel Grid.Row="0" Grid.Column="1">

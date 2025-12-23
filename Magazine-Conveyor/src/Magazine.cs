@@ -1,17 +1,14 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Interop;
 
 namespace Magazine_Conveyor
 {
-    public class Magazine : INotifyPropertyChanged, IMagazine
+    /// <summary>
+    /// Model class representing the magazine data and business logic.
+    /// Pure Model - no UI concerns, no INotifyPropertyChanged.
+    /// </summary>
+    public class Magazine : IMagazine
     {
         private bool isRotary;
         public static readonly int PLACES_AVAILABLE_DEFAULT = 50;
@@ -20,8 +17,6 @@ namespace Magazine_Conveyor
         private int neededPlaces;
         private List<Position> positions;
         private static Magazine? instance;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public static Magazine GetInstance(int positionsCount, bool isRotary = false, bool createAlwaysNew = true)
         {
@@ -43,50 +38,42 @@ namespace Magazine_Conveyor
             this.positions = [];
         }
 
-        public List<Position> Positions { get => positions; private set => positions = value; } // = Enumerable.Range(0, POSITION_MAX_COUNT).Select(i => new Position()).ToList();                            
+        public List<Position> Positions { get => positions; private set => positions = value; }
+        
         public bool IsRotary
         {
-            get => isRotary; set
-            {
-                if (isRotary == value)
-                    return;
-                isRotary = value;
-                //Inform View
-                OnPropertyChanged(nameof(IsRotary));
-            }
+            get => isRotary;
+            set => isRotary = value;
         }
+        
         public int PositionCount
         {
-            get => positionCount; set
-            {
-                if (positionCount == value)
-                    return;
-                positionCount = value;
-                //Inform View
-                OnPropertyChanged(nameof(PositionCount));
-            }
+            get => positionCount;
+            set => positionCount = value;
         }
+        
         public int NeededPlaces
         {
-            get => neededPlaces; set
+            get => neededPlaces;
+            set => neededPlaces = value;
+        }
+
+        /// <summary>
+        /// Get information about all current positions (places) whether the place is occupied or not.
+        /// </summary>
+        public bool[] Places
+        {
+            get
             {
-                if (NeededPlaces == value)
-                    return;
-                neededPlaces = value;
-                //Inform View
-                OnPropertyChanged(nameof(NeededPlaces));
+                var visiblePos = Positions.Where(p => p.IsVisible);
+                IEnumerable<bool> occupied = visiblePos.Select(i => i.IsChecked);
+                return occupied.ToArray();
             }
         }
 
-        //Inform View
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /**
-         * Based on selected PositionCount make each Position visible or not.
-         */
+        /// <summary>
+        /// Based on selected PositionCount make each Position visible or not.
+        /// </summary>
         public void UpdatePositionsVisibility()
         {
             for (int i = 0; i < Positions.Count; i++)
@@ -96,27 +83,11 @@ namespace Magazine_Conveyor
             }
         }
 
-        /**
-         * Get information about all current positions (places) whether the place is occupied or not.
-         */
-        public bool[] Places
-        {
-            get
-            {
-                bool isRot = IsRotary;
-                var neeededPlaces = NeededPlaces;
-                bool[] currPlaces = [];
-                var visiblePos = Positions.Where(j => j.IsVisible);
-                IEnumerable<bool> occupied = visiblePos.Select(i => i.IsChecked);
-                return currPlaces = occupied.ToArray();
-            }
-        }
-
-        /**         
- * Return -1 if no suitable position found.
- * Return first sutiable position based on FindFreePlace() and mark the Positions as occupied.         
- * Place == Index
- */
+        /// <summary>
+        /// Mark positions as occupied starting from freePlace index.
+        /// Returns -1 if no suitable position found.
+        /// Marks the Positions as occupied. Place == Index
+        /// </summary>
         public void UpdatePossitionsOccupancy(int freePlace)
         {
             if (freePlace >= 0)
@@ -147,12 +118,12 @@ namespace Magazine_Conveyor
         public int FindFreePlace(bool[] places, bool isRotary, int neededPlaces)
         {
             int ret = -1;
-            //MessageBox.Show("places " + string.Join(";", places) + ", isRotary " + isRotary + ", neededPlaces " + neededPlaces);
             int i = 0;
             bool previous = true;
             bool current = true;
             int placesFound = 0;
             bool endAlreadyReached = false;
+            
             if (places.Length > 0 && neededPlaces > 0 && neededPlaces <= places.Length)
             {
                 do
@@ -183,7 +154,7 @@ namespace Magazine_Conveyor
                 } while (placesFound < neededPlaces && i < places.Length);
             }
 
-            // If not enought free places available
+            // If not enough free places available
             if (placesFound != neededPlaces)
             {
                 ret = -1;
@@ -191,5 +162,4 @@ namespace Magazine_Conveyor
             return ret;
         }
     }
-
 }
