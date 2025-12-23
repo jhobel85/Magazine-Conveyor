@@ -1,8 +1,8 @@
-﻿using Magazine_Conveyor.Model;
-using Magazine_Conveyor.Service;
+﻿using Magazine_WPF.Model;
+using Magazine_WPF.Service;
 
 
-namespace Magazine_Conveyor.Tests
+namespace Magazine_WPF.Tests
 {
     public class FindFreePlaceTest
     {

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using Magazine_Conveyor.Model;
-using Magazine_Conveyor.Service;
+using Magazine_WPF.Model;
+using Magazine_WPF.Service;
 
-namespace Magazine_Conveyor.ViewModel
+namespace Magazine_WPF.ViewModel
 {
     /// <summary>
     /// ViewModel for the Magazine application.

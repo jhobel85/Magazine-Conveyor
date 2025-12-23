@@ -48,7 +48,7 @@ dotnet build Converyor_magazine.sln
 
 ### Run
 ```bash
-dotnet run --project Magazine-Conveyor/Magazine-Conveyor.csproj
+dotnet run --project Magazine_WPF/Magazine_WPF.csproj
 ```
 
 ### Run Tests
@@ -84,7 +84,7 @@ The project includes comprehensive unit tests covering:
 
 Run all tests with:
 ```bash
-dotnet test Magazine-Conveyor/tests/UnitTests.csproj
+dotnet test Magazine_WPF/tests/UnitTests.csproj
 ```
 
 ## Architecture
@@ -92,7 +92,7 @@ dotnet test Magazine-Conveyor/tests/UnitTests.csproj
 ### Project Structure
 
 ```
-Magazine-Conveyor/
+Magazine_WPF/
 ├── Model/
 │   ├── Magazine.cs          - Core algorithm and data model
 │   ├── Position.cs          - Individual position with INotifyPropertyChanged
@@ -133,7 +133,7 @@ The application follows a strict **Model-View-ViewModel (MVVM)** pattern with cl
 
 #### **ViewModel Layer** (`ViewModel/`)
 - **`MagazineViewModel.cs`**: Mediates between View and Model
-  - Namespace: `Magazine_Conveyor.ViewModel`
+  - Namespace: `Magazine_WPF.ViewModel`
   - Implements `INotifyPropertyChanged` for data binding
   - Exposes properties: `PositionCount`, `IsRotary`, `NeededPlaces`, `LastFoundPosition`
   - Implements `ICommand` properties:
@@ -143,45 +143,45 @@ The application follows a strict **Model-View-ViewModel (MVVM)** pattern with cl
   - Creates and manages the Model and Service instances
 
 - **`RelayCommand.cs`**: Implementation of `ICommand` interface
-  - Namespace: `Magazine_Conveyor.ViewModel`
+  - Namespace: `Magazine_WPF.ViewModel`
   - Generic and non-generic versions for flexible command binding
   - Enables buttons to execute commands without code-behind event handlers
 
 #### **View Layer** (`View/`)
 - **`MainWindow.xaml`**: Pure XAML UI definition
-  - Namespace: `xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:Magazine_Conveyor="clr-namespace:Magazine_Conveyor.View"`
+  - Namespace: `xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:Magazine_WPF="clr-namespace:Magazine_WPF.View"`
   - Data bindings to ViewModel properties
   - Command bindings to ViewModel commands
   - Contains only presentation logic
   - No code-behind event handlers (replaced by commands)
 
 - **`MainWindow.xaml.cs`**: Minimal code-behind
-  - Namespace: `Magazine_Conveyor.View`
+  - Namespace: `Magazine_WPF.View`
   - Sets `DataContext` to `MagazineViewModel` instance (imported from ViewModel namespace)
   - No business logic
 
 - **`App.xaml` & `App.xaml.cs`**: Application-level configuration
-  - Namespace: `Magazine_Conveyor.View`
+  - Namespace: `Magazine_WPF.View`
   - Application startup and resource definitions
 
 - **`CircularPanel.cs`**: Custom WPF Panel control
-  - Namespace: `Magazine_Conveyor.View`
+  - Namespace: `Magazine_WPF.View`
   - Renders circular magazine visualization
   - Used by MainWindow for UI layout
 
 - **`ParametrizedBooleanToVisibilityConverter.cs`**: WPF value converter
-  - Namespace: `Magazine_Conveyor.View`
+  - Namespace: `Magazine_WPF.View`
   - Converts boolean position state to visibility for UI binding
 
 #### **Service Layer** (`Service/`)
 - **`FindFreePlaceService.cs`**: Implements `IService` interface
-  - Namespace: `Magazine_Conveyor.Service`
+  - Namespace: `Magazine_WPF.Service`
   - Injected into ViewModel
   - Encapsulates the algorithm execution
   - Acts as a bridge between ViewModel and Model
 
 - **`IService.cs`**: Service interface contract
-  - Namespace: `Magazine_Conveyor.Service`
+  - Namespace: `Magazine_WPF.Service`
   - Enables dependency injection and loose coupling
 
 ### Dependency Injection Flow
@@ -213,4 +213,4 @@ MagazineViewModel (DataContext)
 
 ## License
 
-See [LICENSE](Magazine-Conveyor/LICENSE) file for details.
+See [LICENSE](Magazine_WPF/LICENSE) file for details.

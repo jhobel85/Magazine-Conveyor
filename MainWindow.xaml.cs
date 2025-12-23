@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using Magazine_Conveyor.ViewModel;
+﻿using Magazine_WPF.ViewModel;
+using System.Windows;
 
-namespace Magazine_Conveyor
+namespace Magazine_WPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -12,7 +12,7 @@ namespace Magazine_Conveyor
         public MainWindow()
         {
             InitializeComponent();
-            // Set DataContext to ViewModel (not the Model)
+            // Set DataContext to ViewModel (not the Model)            
             this.DataContext = new MagazineViewModel();
         }
     }

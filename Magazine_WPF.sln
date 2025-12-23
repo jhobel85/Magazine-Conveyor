@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magazine-Conveyor", "Magazine-Conveyor\Magazine-Conveyor.csproj", "{4CA2CA91-D6E4-4EE4-9815-71050D6C8C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Magazine_WPF", "Magazine_WPF.csproj", "{4CA2CA91-D6E4-4EE4-9815-71050D6C8C29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "Magazine-Conveyor\tests\UnitTests.csproj", "{E43CC546-1D14-4FAA-BDC9-7A832DB5A06D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests.csproj", "{E43CC546-1D14-4FAA-BDC9-7A832DB5A06D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

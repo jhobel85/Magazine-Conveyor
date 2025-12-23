@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Magazine_Conveyor
+namespace Magazine_WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml

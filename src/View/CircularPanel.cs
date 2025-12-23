@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Magazine_Conveyor.View
+namespace Magazine_WPF.View
 {
     public class CircularPanel : Panel
     {

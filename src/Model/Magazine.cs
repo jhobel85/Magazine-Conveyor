@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Magazine_Conveyor.Model
+namespace Magazine_WPF.Model
 {
     /// <summary>
     /// Model class representing the magazine data and business logic.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Magazine_Conveyor.Service
+namespace Magazine_WPF.Service
 {
     public interface IService
     {

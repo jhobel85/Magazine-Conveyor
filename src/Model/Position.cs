@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Magazine_Conveyor.Model
+namespace Magazine_WPF.Model
 {
     public class Position : INotifyPropertyChanged
     {

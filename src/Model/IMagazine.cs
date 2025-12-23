@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Magazine_Conveyor.Model
+namespace Magazine_WPF.Model
 {
     public interface IMagazine
     {
